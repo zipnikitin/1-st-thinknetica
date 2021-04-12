@@ -1,7 +1,7 @@
 class Station
   attr_accessor :trains
-
-  def initialize(name, trains_numbers = [])
+  attr_reader :trains, :name, :f_trains, :p_trains
+  def initialize(name)
     @name = name
     @trains = 0
     @f_trains = 0
@@ -10,52 +10,54 @@ class Station
   end
 
   def there(name)
-    @trains_numbers.remove(name)
+    @trains_numbers.delete(name)
   end
 
-  def add_train(number, type)
-    (@trains_numbers << number; @trains += 1) if @train.speed != 0
+  def add_train(new_number, type)
+    (@trains_numbers.append(new_number);  @trains += 1) if @train.speed != 0
     (@f_trains += 1) if @type == 'f' 
     (@p_trains += 1) if @type == 'p' 
   end
 
   def show_trains
-  	return @trains
-  	return @f_trains
-  	return @p_trains
-    return @trains_numbers.each { |number| puts number }
+  	@trains
+  	@f_trains
+  	@p_trains
+    @trains_numbers.each { |number| puts trains_numbers.number }
   end
 end
 
 class Route
+  attr_reader :first, :last, :station_names
   def initialize(first, last)
-  	@station_names.unshift(first)
-  	@station_names.unpop(last)
-    @station_names = []
+  	@first = first
+  	@last = last
+    @station_names = [first, last]
   end
 
   def plus_station(name)
-  	@station_names.insert(-1, name)
+  	@station_names.insert(station_names.lenght-1, name)
   end 
 
   def del_first(name)
-  	@station_names.remove(name)
+  	@station_names.delete(name)
   end 
 
   def show_route
-    @station_names.each { |name| puts name }
+    @station_names.each { |name| puts station_names.name }
   end
 end
 
 class Train
-  attr_accessor :speed, :vagons
+  attr_reader :speed, :vagons, :number, :type
 
-  def initialize(number, type)
+  def initialize(number, type, vagons)
   	@type = type
     @number = number
     @speed = 0
-    @vagons = 0
-    @route = []
+    @current_station
+    @vagons = vagons
+    @tr_route = [] 
   end
 
   def fast(up)
@@ -74,11 +76,26 @@ class Train
     (@vagons -= 1) if @speed == 0 
   end
 
-  def add_route
-    @rouete = station_names
+  def add_route(tr_route)
+    @tr_route = tr_route
+    @tr_route.first.add_train(self)
   end
 
-  def show_route
-    @train_route.each { |name| puts name }
+  def next_station
+  	unless @current_station==@tr_route.station_names
+  		@current_station += 1
+  	end
+  	tr_route.station_names[current_station].add_train
+  end
+
+  def prev_station
+  	unless @current_station==@tr_route.station_names
+  		@current_station -= 0
+  	end
+  	tr_route.station_names[current_station].add_train
+  end
+
+  def now
+  	return @tr_route.station_names[current_station]
   end
 end
